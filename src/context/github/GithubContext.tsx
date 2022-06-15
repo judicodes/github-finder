@@ -1,5 +1,5 @@
 import { createContext, useReducer } from "react";
-import githubReducer, { ActionType } from "./GithubReducer";
+import githubReducer, { GithubActionType } from "./GithubReducer";
 
 interface Context {
   users: User[];
@@ -14,7 +14,7 @@ export interface User {
   avatar_url: string;
 }
 
-export interface State {
+export interface GithubState {
   users: User[];
   isLoading: boolean;
 }
@@ -26,33 +26,28 @@ const GithubContext = createContext<Context>({
   clearUsers: () => {}
 });
 const GITHUB_URL = process.env.REACT_APP_GITHUB_URL;
-const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
 export const GithubProvider = ({ children }: any) => {
-  const initialState: State = { users: [], isLoading: false };
+  const initialState: GithubState = { users: [], isLoading: false };
 
   const [state, dispatch] = useReducer(githubReducer, initialState);
 
   const searchUsers = async (text: string) => {
     setLoading();
     const params = new URLSearchParams({ q: text });
-    const response = await fetch(`${GITHUB_URL}/search/users?${params}`, {
-      headers: {
-        Authorization: `token ${GITHUB_TOKEN}`
-      }
-    });
+    const response = await fetch(`${GITHUB_URL}/search/users?${params}`);
     const { items } = await response.json();
     dispatch({
-      type: ActionType.GetUsers,
+      type: GithubActionType.GetUsers,
       payload: items
     });
   };
 
   const clearUsers = () => {
-    dispatch({ type: ActionType.ClearUsers });
+    dispatch({ type: GithubActionType.ClearUsers });
   };
 
-  const setLoading = () => dispatch({ type: ActionType.SetLoading });
+  const setLoading = () => dispatch({ type: GithubActionType.SetLoading });
 
   return (
     <GithubContext.Provider

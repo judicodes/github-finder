@@ -1,30 +1,30 @@
-import { State, User } from "./GithubContext";
+import { GithubState, User } from "./GithubContext";
 
-interface Action {
-  type: ActionType;
+interface GithubAction {
+  type: GithubActionType;
   payload?: User[];
 }
 
-export enum ActionType {
+export enum GithubActionType {
   GetUsers,
   ClearUsers,
   SetLoading
 }
 
-const githubReducer = (state: State, action: Action): State => {
+const githubReducer = (state: GithubState, action: GithubAction): GithubState => {
   switch (action.type) {
-    case ActionType.GetUsers:
+    case GithubActionType.GetUsers:
       return {
         ...state,
         users: action.payload ?? [],
         isLoading: false
       };
-    case ActionType.ClearUsers:
+    case GithubActionType.ClearUsers:
       return {
         ...state,
         users: []
       };
-    case ActionType.SetLoading:
+    case GithubActionType.SetLoading:
       return {
         ...state,
         isLoading: true
