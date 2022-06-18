@@ -1,13 +1,11 @@
 import React, { useContext, useState } from "react";
-import AlertContext, {
-  AlertType
-} from "../../context/alert/AlertContext";
+import AlertContext, { AlertType } from "../../context/alert/AlertContext";
 import GithubContext from "../../context/github/GithubContext";
 
 function UserSearch() {
   const [text, setText] = useState("");
   const { users, searchUsers, clearUsers } = useContext(GithubContext);
- 
+
   const { setAlert } = useContext(AlertContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +29,7 @@ function UserSearch() {
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 gap-8 mb-6">
       <div>
         <form onSubmit={handleSubmit}>
           <div className="formControl">
@@ -53,7 +51,7 @@ function UserSearch() {
           </div>
         </form>
       </div>
-      {users.length > 0 && (
+      {users && users.length > 0 && (
         <div>
           <button onClick={handleClear} className="btn btn-ghost btn-lg">
             Clear

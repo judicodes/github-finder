@@ -10,7 +10,7 @@ function UserResults() {
     <Spinner />
   ) : (
     <div className="grid gap-8 grid-cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
-      {users.map((user) => (
+      {users?.map((user) => (
         <UserItem
           key={user.id}
           login={user.login}

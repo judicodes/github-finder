@@ -1,23 +1,38 @@
-import { GithubState, User } from "./GithubContext";
+import { GithubState, Repo, User } from "./GithubContext";
 
 interface GithubAction {
   type: GithubActionType;
-  payload?: User[];
+  payload?: {
+    users?: User[];
+    user?: User;
+    userRepos?: Repo[];
+  };
 }
 
 export enum GithubActionType {
   GetUsers,
+  GetUser,
   ClearUsers,
-  SetLoading
+  SetLoading,
+  StopLoading
 }
 
-const githubReducer = (state: GithubState, action: GithubAction): GithubState => {
+const githubReducer = (
+  state: GithubState,
+  action: GithubAction
+): GithubState => {
   switch (action.type) {
     case GithubActionType.GetUsers:
       return {
         ...state,
-        users: action.payload ?? [],
+        users: action.payload?.users,
         isLoading: false
+      };
+    case GithubActionType.GetUser:
+      return {
+        ...state,
+        isLoading: false,
+        user: action.payload?.user
       };
     case GithubActionType.ClearUsers:
       return {
@@ -28,6 +43,11 @@ const githubReducer = (state: GithubState, action: GithubAction): GithubState =>
       return {
         ...state,
         isLoading: true
+      };
+    case GithubActionType.StopLoading:
+      return {
+        ...state,
+        isLoading: false
       };
     default:
       return state;
