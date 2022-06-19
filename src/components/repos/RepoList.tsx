@@ -1,4 +1,4 @@
-import { Repo } from "../../context/github/GithubContext";
+import { Repo } from "../../pages/User";
 import RepoItem from "./RepoItem";
 
 interface Props {

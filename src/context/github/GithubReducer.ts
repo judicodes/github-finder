@@ -1,11 +1,11 @@
-import { GithubState, Repo, User } from "./GithubContext";
+import { UserData } from "../../pages/User";
+import { GithubState } from "./GithubContext";
 
-interface GithubAction {
+export interface GithubAction {
   type: GithubActionType;
   payload?: {
-    users?: User[];
-    user?: User;
-    userRepos?: Repo[];
+    users?: UserData[];
+    user?: UserData;
   };
 }
 
@@ -13,8 +13,7 @@ export enum GithubActionType {
   GetUsers,
   GetUser,
   ClearUsers,
-  SetLoading,
-  StopLoading
+  SetLoading
 }
 
 const githubReducer = (
@@ -43,11 +42,6 @@ const githubReducer = (
       return {
         ...state,
         isLoading: true
-      };
-    case GithubActionType.StopLoading:
-      return {
-        ...state,
-        isLoading: false
       };
     default:
       return state;

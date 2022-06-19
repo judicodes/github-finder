@@ -1,17 +1,19 @@
 import React, { useContext, useState } from "react";
 import AlertContext, { AlertType } from "../../context/alert/AlertContext";
+import { searchUsers } from "../../context/github/GithubAPICalls";
 import GithubContext from "../../context/github/GithubContext";
+import { GithubActionType } from "../../context/github/GithubReducer";
 
 function UserSearch() {
   const [text, setText] = useState("");
-  const { users, searchUsers, clearUsers } = useContext(GithubContext);
+  const { users, dispatch } = useContext(GithubContext);
 
   const { setAlert } = useContext(AlertContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setText(event.currentTarget.value);
   };
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (text === "") {
       setAlert({
@@ -19,13 +21,20 @@ function UserSearch() {
         msg: "Please enter something"
       });
     } else {
-      searchUsers(text);
+      dispatch({ type: GithubActionType.SetLoading });
+      const items = await searchUsers(text);
+      dispatch({
+        type: GithubActionType.GetUsers,
+        payload: {
+          users: items
+        }
+      });
       setText("");
     }
   };
   const handleClear = (event: React.FormEvent) => {
     event.preventDefault();
-    clearUsers();
+    dispatch({ type: GithubActionType.ClearUsers });
   };
 
   return (

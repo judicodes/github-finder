@@ -3,10 +3,42 @@ import { FaCodepen, FaStore, FaUserFriends, FaUsers } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import Spinner from "../components/layout/Spinner";
 import RepoList from "../components/repos/RepoList";
+import { getUserAndRepos } from "../context/github/GithubAPICalls";
 import GithubContext from "../context/github/GithubContext";
+import { GithubActionType } from "../context/github/GithubReducer";
+
+export interface Repo {
+  id: string;
+  name: string;
+  description: string;
+  html_url: string;
+  forks: number;
+  open_issues: number;
+  watchers_count: number;
+  stargazers_count: number;
+}
+
+export interface UserData {
+  id: number;
+  login: string;
+  name?: string;
+  location?: string;
+  type?: string;
+  avatar_url: string;
+  bio?: string;
+  blog?: string;
+  twitter_username?: string;
+  html_url?: string;
+  followers?: number;
+  following?: number;
+  public_repos?: number;
+  public_gists?: number;
+  hireable?: boolean;
+  repos?: Repo[];
+}
 
 function User() {
-  const { user, getUserAndRepos, isLoading } = useContext(GithubContext);
+  const { user, isLoading, dispatch } = useContext(GithubContext);
   const params = useParams();
 
   const {
@@ -30,11 +62,19 @@ function User() {
   const websiteUrl = blog?.startsWith("http") ? blog : "https://" + blog;
 
   useEffect(() => {
-    if (params.login) {
-      getUserAndRepos(params.login);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const getUserData = async () => {
+      if (params.login) {
+        dispatch({ type: GithubActionType.SetLoading });
+        const userData = await getUserAndRepos(params.login);
+        userData &&
+          dispatch({
+            type: GithubActionType.GetUser,
+            payload: { user: userData }
+          });
+      }
+    };
+    getUserData();
+  }, [dispatch, params.login]);
 
   return isLoading ? (
     <Spinner />
